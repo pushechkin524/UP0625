@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/product_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="product-page d-flex flex-wrap gap-4 mt-4">
+    <div class="product-image col-md-5">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid border rounded shadow-sm" />
+        {% endif %}
+    </div>
+    <div class="product-info col-md-6">
+        <h1>{{ product.name }}</h1>
+        <p class="product-price text-danger fw-bold">Цена: {{ product.price }} ₽</p>
+    </div>
+</div>
+
+<div class="product-description bg-light p-4 mt-4 border rounded">
+    <h3>Описание</h3>
+    <p>{{ product.description }}</p>
+    <a href="{% url 'catalog' %}" class="btn btn-outline-primary mt-3">← Назад к каталогу</a>
+</div>
+{% endblock %}

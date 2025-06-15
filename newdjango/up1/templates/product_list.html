@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Список товаров{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Наши товары</h1>
+
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+        <a href="{% url 'product_detail' product.pk %}" class="text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+                {% else %}
+                    <img src="{% static 'no-image.jpg' %}" class="card-img-top" alt="Нет изображения">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.title }}</h5>
+                    <p class="card-text">{{ product.description|truncatewords:15 }}</p>
+                    <p class="card-text"><strong>{{ product.price }} ₽</strong></p>
+                </div>
+            </div>
+        </a>
+        <div class="mt-2">
+            <a href="{% url 'product_update' product.pk %}" class="btn btn-primary btn-sm">Редактировать</a>
+            <a href="{% url 'product_delete' product.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>Товары пока не добавлены.</p>
+    {% endfor %}
+</div>
+{% endblock %}

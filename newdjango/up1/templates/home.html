@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center" style="color: #a75656;">Наши товары</h2>
+
+<div class="row g-4 mb-5">
+    <div class="col-6 col-md-3">
+        <img src="{% static 'images/tov1.webp' %}" alt="Товар 1" class="img-fluid rounded" />
+    </div>
+    <div class="col-6 col-md-3">
+        <img src="{% static 'images/tov2.webp' %}" alt="Товар 2" class="img-fluid rounded" />
+    </div>
+    <div class="col-6 col-md-3">
+        <img src="{% static 'images/tovv.webp' %}" alt="Товар 3" class="img-fluid rounded" />
+    </div>
+    <div class="col-6 col-md-3">
+        <img src="{% static 'images/tov4.webp' %}" alt="Товар 4" class="img-fluid rounded" />
+    </div>
+</div>
+
+{% include 'includes/promo_banner.html' %}
+
+<h2 class="mb-4">Новинки</h2>
+<div class="row">
+    <!-- Примеры карточек -->
+    <div class="col-md-4">
+        <div class="product-card text-center">
+            <img src="{% static 'images/komp.jpg' %}" alt="Компрессор" class="product-image img-fluid rounded" />
+            <h5>Автомобильный компрессор</h5>
+            <p>Удобный и компактный компрессор для шин.</p>
+            <p class="fw-bold text-danger">Цена: 2500 ₽</p>
+            <a href="#" class="btn btn-primary">Купить</a>
+        </div>
+    </div>
+    <!-- Повторить для остальных товаров -->
+</div>
+
+<!-- Блок “почему мы” -->
+<div class="bg-light p-4 rounded shadow-sm mt-5">
+    <h2 class="mb-4 text-center">Почему выбирают нас?</h2>
+    <ul class="features-list text-danger" style="list-style: none; padding-left: 0;">
+        <li>✔ Большой ассортимент автотоваров</li>
+        <li>✔ Гарантия качества и подлинности</li>
+        <li>✔ Быстрая доставка по всей России</li>
+        <li>✔ Круглосуточная поддержка клиентов</li>
+    </ul>
+</div>
+
+<!-- Контактный блок -->
+<div class="text-center mt-5 mb-5">
+    <h2>Свяжитесь с нами</h2>
+    <p>Есть вопросы? Мы всегда на связи!</p>
+    <a href="{% url 'contacts' %}" class="btn btn-outline-primary btn-lg">Контакты</a>
+</div>
+{% endblock %}

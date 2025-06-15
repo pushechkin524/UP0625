@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}О нас{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-5">О нас</h1>
+
+<div class="happy-man-block">
+    <img src="{% static 'images/mekh.jpg' %}" alt="Довольный мужчина" class="img-fluid" />
+    <div class="happy-man-text">
+        <h2>Мы заботимся о вас и вашем автомобиле!</h2>
+        <p>Наша команда — это профессионалы с большим опытом, которые знают всё об автотоварах и помогут подобрать именно то, что нужно.</p>
+        <p>Присоединяйтесь к тысячам довольных клиентов и ощутите разницу.</p>
+    </div>
+</div>
+
+<h2 class="text-center mb-4">Наша команда</h2>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="team-member text-center">
+            <img src="{% static 'images/man1.avif' %}" alt="Андрей Иванов" class="img-fluid rounded-circle mb-3" />
+            <h5>Андрей Иванов</h5>
+            <p>Основатель и технический эксперт.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="team-member text-center">
+            <img src="{% static 'images/man2.avif' %}" alt="Елена Смирнова" class="img-fluid rounded-circle mb-3" />
+            <h5>Елена Смирнова</h5>
+            <p>Менеджер по работе с клиентами.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="team-member text-center">
+            <img src="{% static 'images/man3.webp' %}" alt="Дмитрий Ковалёв" class="img-fluid rounded-circle mb-3" />
+            <h5>Дмитрий Ковалёв</h5>
+            <p>Специалист по логистике и доставке.</p>
+        </div>
+    </div>
+</div>
+
+{% include 'includes/promo_banner.html' %}
+{% endblock %}

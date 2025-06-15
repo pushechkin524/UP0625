@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Каталог товаров{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Каталог товаров</h1>
+
+<!-- Форма фильтрации и сортировки -->
+<form method="get" class="mb-4">
+    <div class="row justify-content-between align-items-center">
+        <div class="col-md-6">
+            <select name="category" class="form-select" onchange="this.form.submit()">
+                <option value="">Все категории</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if current_category and category.id == current_category.id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select name="sort" class="form-select" onchange="this.form.submit()">
+                <option value="">Сортировать по...</option>
+                <option value="price_asc" {% if request.GET.sort == 'price_asc' %}selected{% endif %}>Цена ↑</option>
+                <option value="price_desc" {% if request.GET.sort == 'price_desc' %}selected{% endif %}>Цена ↓</option>
+            </select>
+        </div>
+    </div>
+</form>
+
+<!-- Список товаров -->
+<div class="row">
+    {% for product in products %}
+    <div class="col-md-4">
+        <div class="product-card text-center">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image img-fluid rounded" />
+            {% endif %}
+            <h5>{{ product.name }}</h5>
+            <p>{{ product.description|truncatechars:100 }}</p>
+            <p class="fw-bold text-danger">Цена: {{ product.price }} ₽</p>
+            <a href="{% url 'product_detail' product.pk %}" class="btn btn-primary me-2">Подробнее</a>
+
+            <form action="{% url 'favorite_add' product.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger">♥ В избранное</button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center">Товары не найдены.</p>
+    {% endfor %}
+</div>
+{% endblock %}

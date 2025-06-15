@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Вторая страница</title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    </head>
+    <body>
+        {% include "includes/navigation.html" %}
+        <div class="container"> 
+            <div class="row">
+                <div class="col">
+                    <h1>Это заголовок H1</h1>
+                    <p>Текст под заголовком первого уровня.</p>
+                </div>
+                <div class="col">
+                    <h2>Это заголовок H2</h2>
+                    <p>Текст под заголовком второго уровня.</p>
+                </div>
+                <div class="col">
+                    <h3>Это заголовок H3</h3>
+                    <p>Текст под заголовком третьего уровня.</p>
+                    <a href="/UP" class="btn btn-primary">Переход на первую страницу</a>
+                </div>
+            </div>
+        </div>
+        
+        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    </body>
+</html>

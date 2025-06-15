@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Избранное{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/favorites.css' %}">
+{% endblock %}
+
+{% block content %}
+<h1 class="text-center mb-4">Избранное</h1>
+
+<div class="row">
+    {% for fav in favorites %}
+        <div class="col-md-4">
+            <div class="product-card text-center">
+                {% if fav.product.image %}
+                    <img src="{{ fav.product.image.url }}" alt="{{ fav.product.name }}" class="product-image img-fluid rounded">
+                {% endif %}
+                <h5>{{ fav.product.name }}</h5>
+                <p>{{ fav.product.description|truncatechars:100 }}</p>
+                <p class="fw-bold text-danger">Цена: {{ fav.product.price }} ₽</p>
+
+                <form action="{% url 'favorite_remove' fav.product.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">Удалить из избранного</button>
+                </form>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-center">Вы ещё не добавили товары в избранное.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Отзывы{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/reviews.css' %}">
+{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">Отзывы наших клиентов</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="review-card">
+            <div class="review-author">Иван Петров</div>
+            <div class="review-stars">★★★★★</div>
+            <div class="review-text">Отличный магазин! Быстрая доставка и качественные товары. Рекомендую всем автолюбителям.</div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="review-card">
+            <div class="review-author">Мария Смирнова</div>
+            <div class="review-stars">★★★★☆</div>
+            <div class="review-text">Очень довольна сервисом и ассортиментом. Всегда нахожу нужные запчасти по хорошей цене.</div>
+        </div>
+    </div>
+</div>
+
+{% include 'includes/promo_banner.html' %}
+
+<div class="text-center mt-5 mb-5">
+    <h2>Свяжитесь с нами</h2>
+    <p>Есть вопросы? Мы всегда на связи!</p>
+    <a href="{% url 'contacts' %}" class="btn btn-outline-primary btn-lg">Контакты</a>
+</div>
+{% endblock %}
