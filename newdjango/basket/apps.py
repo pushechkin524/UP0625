@@ -1,7 +1,6 @@
 from django.apps import AppConfig
 
 
-class UpConfig(AppConfig):
+class BasketConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'UP'
-    verbose_name = 'Магазин одежды'
+    name = 'basket'
