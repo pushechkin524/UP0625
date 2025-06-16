@@ -90,6 +90,8 @@ from django.conf import settings  # Для использования касто
 
 MAX_LENGTH = 255  # Общая длина для полей с ограничением
 
+MAX_LENGTH = 255
+
 class Order(models.Model):
     SHOP = "SH"
     COURIER = "CR"
@@ -100,6 +102,15 @@ class Order(models.Model):
         (COURIER, 'Курьер'),
         (PICKUPPOINT, 'Пункт выдачи заказов'),
     ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='orders',
+        verbose_name='Пользователь',
+        null=True,
+        blank=True
+    )
 
     buyer_firstname = models.CharField(max_length=MAX_LENGTH, verbose_name='Фамилия покупателя')
     buyer_name = models.CharField(max_length=MAX_LENGTH, verbose_name='Имя покупателя')
@@ -113,6 +124,8 @@ class Order(models.Model):
     date_finish = models.DateTimeField(null=True, blank=True, verbose_name='Дата завершения заказа')
 
     products = models.ManyToManyField(Product, through='PosOrder', verbose_name='Товары')
+
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='Сумма заказа')
 
     def __str__(self):
         return f'#{self.pk} - {self.buyer_firstname} {self.buyer_name} ({self.date_create.strftime("%Y-%m-%d")})'

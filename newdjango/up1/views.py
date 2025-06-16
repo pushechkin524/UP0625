@@ -17,6 +17,9 @@ from .forms import LoginForm
 from .models import Favorite
 from .forms import UserForm
 from .models import Category
+from basket.basket import Basket  # ← абсолютный путь
+from basket.forms import OrderForm, BasketAddProductForm  # ✅ формы
+from up1.models import Product, Order, PosOrder  # ✅ модели
 from .forms import CategoryForm
 from .models import Review
 from .forms import ReviewForm
@@ -24,11 +27,46 @@ from .models import Faq
 from .forms import FaqForm
 from .models import Season
 from .forms import SeasonForm
+from django.views.generic.detail import DetailView
+from basket.forms import BasketAddProductForm
+from .forms import RegisterForm
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.contrib.auth.decorators import login_required
+from up1.models import Order
 
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-date_create')  # или другой фильтр
+    return render(request, 'my_orders.html', {'orders': orders})
+
+def admin_required(view_func):
+    return login_required(user_passes_test(lambda u: u.is_staff)(view_func))
+
+
+def register_view(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('login')  # или куда ты хочешь после регистрации
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
+
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'product_detail.html'
+    context_object_name = 'product'  # это важно!
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_basket'] = BasketAddProductForm()
+        return context
+@admin_required
 def season_list(request):
     seasons = Season.objects.all()
     return render(request, 'seasons/season_list.html', {'seasons': seasons})
-
+@admin_required
 def season_create(request):
     if request.method == 'POST':
         form = SeasonForm(request.POST)
@@ -38,7 +76,7 @@ def season_create(request):
     else:
         form = SeasonForm()
     return render(request, 'seasons/season_form.html', {'form': form, 'title': 'Добавить сезон'})
-
+@admin_required
 def season_update(request, pk):
     season = get_object_or_404(Season, pk=pk)
     if request.method == 'POST':
@@ -49,7 +87,7 @@ def season_update(request, pk):
     else:
         form = SeasonForm(instance=season)
     return render(request, 'seasons/season_form.html', {'form': form, 'title': 'Редактировать сезон'})
-
+@admin_required
 def season_delete(request, pk):
     season = get_object_or_404(Season, pk=pk)
     if request.method == 'POST':
@@ -58,12 +96,12 @@ def season_delete(request, pk):
     return render(request, 'seasons/season_confirm_delete.html', {'season': season})
 
 
-@login_required
+@admin_required
 def faq_list(request):
     faqs = Faq.objects.all()
     return render(request, 'faq/faq_list.html', {'faqs': faqs})
 
-@login_required
+@admin_required
 def faq_create(request):
     if request.method == 'POST':
         form = FaqForm(request.POST)
@@ -74,7 +112,7 @@ def faq_create(request):
         form = FaqForm()
     return render(request, 'faq/faq_form.html', {'form': form, 'title': 'Добавить вопрос'})
 
-@login_required
+@admin_required
 def faq_update(request, pk):
     faq = get_object_or_404(Faq, pk=pk)
     if request.method == 'POST':
@@ -86,7 +124,7 @@ def faq_update(request, pk):
         form = FaqForm(instance=faq)
     return render(request, 'faq/faq_form.html', {'form': form, 'title': 'Редактировать вопрос'})
 
-@login_required
+@admin_required
 def faq_delete(request, pk):
     faq = get_object_or_404(Faq, pk=pk)
     if request.method == 'POST':
@@ -109,10 +147,12 @@ def reviews_page(request: WSGIHandler):
 
 # --- CRUD для Product ---
 
+@admin_required
 def product_list(request: WSGIHandler):
     products = Product.objects.all()
     return render(request, 'product_list.html', {'products': products})
 
+@admin_required
 def product_create(request: WSGIHandler):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
@@ -123,6 +163,7 @@ def product_create(request: WSGIHandler):
         form = ProductForm()
     return render(request, 'product_form.html', {'form': form})
 
+@admin_required
 def product_update(request: WSGIHandler, pk: int):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -134,6 +175,7 @@ def product_update(request: WSGIHandler, pk: int):
         form = ProductForm(instance=product)
     return render(request, 'product_form.html', {'form': form})
 
+@admin_required
 def product_delete(request: WSGIHandler, pk: int):
     product = get_object_or_404(Product, pk=pk)
     if request.method == 'POST':
@@ -178,7 +220,6 @@ def toggle_favorite(request, product_id):
         favorite.delete()
     return redirect('product_detail', pk=product_id)  
 
-@login_required
 def favorite_add(request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     Favorite.objects.get_or_create(user=request.user, product=product)
@@ -188,18 +229,18 @@ def favorite_list(request):
     favorites = Favorite.objects.filter(user=request.user).select_related('product')
     return render(request, 'favorites.html', {'favorites': favorites})
 
-@login_required
 def favorite_remove(request, pk):
     favorite = get_object_or_404(Favorite, user=request.user, product_id=pk)
     favorite.delete()
     return redirect('favorites')
 
+@admin_required
 def brand_list(request):
     brands = Brand.objects.all()
     return render(request, 'brands/brand_list.html', {'brands': brands})
 
 
-@login_required
+@admin_required
 def brand_create(request):
     form = BrandForm(request.POST or None)
     if form.is_valid():
@@ -208,7 +249,7 @@ def brand_create(request):
     return render(request, 'brands/brand_form.html', {'form': form, 'title': 'Добавить бренд'})
 
 
-@login_required
+@admin_required
 def brand_update(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     form = BrandForm(request.POST or None, instance=brand)
@@ -218,7 +259,7 @@ def brand_update(request, pk):
     return render(request, 'brands/brand_form.html', {'form': form, 'title': 'Редактировать бренд'})
 
 
-@login_required
+@admin_required
 def brand_delete(request, pk):
     brand = get_object_or_404(Brand, pk=pk)
     if request.method == 'POST':
@@ -228,13 +269,13 @@ def brand_delete(request, pk):
 
 User = get_user_model()
 
-@login_required
+@admin_required
 def user_list(request):
     users = User.objects.all()
     return render(request, 'users/user_list.html', {'users': users})
 
 
-@login_required
+@admin_required
 def user_create(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -246,7 +287,7 @@ def user_create(request):
     return render(request, 'users/user_form.html', {'form': form, 'title': 'Добавить пользователя'})
 
 
-@login_required
+@admin_required
 def user_update(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -259,7 +300,7 @@ def user_update(request, pk):
     return render(request, 'users/user_form.html', {'form': form, 'title': 'Редактировать пользователя'})
 
 
-@login_required
+@admin_required
 def user_delete(request, pk):
     user = get_object_or_404(User, pk=pk)
     if request.method == 'POST':
@@ -269,13 +310,13 @@ def user_delete(request, pk):
 
 
 
-@login_required
+@admin_required
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'categories/category_list.html', {'categories': categories})
 
 
-@login_required
+@admin_required
 def category_create(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -287,7 +328,7 @@ def category_create(request):
     return render(request, 'categories/category_form.html', {'form': form, 'title': 'Создание категории'})
 
 
-@login_required
+@admin_required
 def category_update(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -300,7 +341,7 @@ def category_update(request, pk):
     return render(request, 'categories/category_form.html', {'form': form, 'title': 'Редактирование категории'})
 
 
-@login_required
+@admin_required
 def category_delete(request, pk):
     category = get_object_or_404(Category, pk=pk)
     if request.method == 'POST':
@@ -308,13 +349,13 @@ def category_delete(request, pk):
         return redirect('category_list')
     return render(request, 'categories/category_confirm_delete.html', {'category': category})
 
-@login_required
+@admin_required
 def review_list(request):
     reviews = Review.objects.select_related('user', 'product')
     return render(request, 'reviews/review_list.html', {'reviews': reviews})
 
 
-@login_required
+@admin_required
 def review_create(request):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -328,7 +369,7 @@ def review_create(request):
     return render(request, 'reviews/review_form.html', {'form': form, 'title': 'Добавить отзыв'})
 
 
-@login_required
+@admin_required
 def review_update(request, pk):
     review = get_object_or_404(Review, pk=pk)
     if request.method == 'POST':
@@ -341,7 +382,7 @@ def review_update(request, pk):
     return render(request, 'reviews/review_form.html', {'form': form, 'title': 'Редактировать отзыв'})
 
 
-@login_required
+@admin_required
 def review_delete(request, pk):
     review = get_object_or_404(Review, pk=pk)
     if request.method == 'POST':
@@ -372,3 +413,28 @@ def catalog_view(request):
         'current_category': current_category,
     }
     return render(request, 'catalog.html', context)
+
+@login_required
+def basket_buy(request):
+    basket = Basket(request)
+    if len(basket) <= 0:
+        return redirect('catalog')
+
+    form = OrderForm(request.POST or None)
+    if form.is_valid():
+        order = form.save(commit=False)
+        order.user = request.user
+        order.price = basket.get_total_price()
+        order.save()
+
+        for item in basket:
+            PosOrder.objects.create(
+                product=item['product'],
+                quantity=item['count'],
+                order=order
+            )
+
+        basket.clear()
+        return redirect('basket_detail')
+
+    return render(request, 'order/order_form.html', {'form_order': form})

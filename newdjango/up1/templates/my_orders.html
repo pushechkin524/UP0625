@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Мои заказы{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Мои заказы</h2>
+
+{% if orders %}
+    {% for order in orders %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header">
+                <strong>Заказ №{{ order.id }}</strong> — {{ order.date_create|date:"d.m.Y H:i" }}<br>
+                <span>Доставка: {{ order.get_delivery_type_display }}</span><br>
+                <span>Адрес: {{ order.delivery_address }}</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    {% for item in order.posorder_set.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ item.product.name }} — {{ item.quantity }} шт.
+                            <span>{{ item.product.price|floatformat:2 }} ₽</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                <div class="text-end">
+                    <strong>Итого: {{ order.price|floatformat:2 }} ₽</strong>
+                </div>
+                {% if order.comment %}
+                    <p class="mt-2"><strong>Комментарий:</strong> {{ order.comment }}</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>У вас пока нет заказов.</p>
+{% endif %}
+{% endblock %}

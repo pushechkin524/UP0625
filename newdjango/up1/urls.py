@@ -5,11 +5,12 @@ from .views import user_list, user_create, user_update, user_delete
 from .views import category_list, category_create, category_update, category_delete
 from .views import review_list, review_create, review_update, review_delete
 from .views import faq_list, faq_create, faq_update, faq_delete
-from .views import season_list, season_create, season_update, season_delete
+from .views import season_list, season_create, season_update, season_delete, register_view, my_orders
+from .views import ProductDetailView
 from .views import (
     home_page,
     about_page,
-    reviews_page,
+    reviews_page, 
     toggle_favorite,
     contacts_page,
     product_list,
@@ -34,12 +35,19 @@ urlpatterns = [
     path('contacts/', contacts_page, name='contacts'),
     path('reviews/', reviews_page, name='reviews'),
     path('catalog/', catalog_view, name='catalog'),
+    
+    path('register/', register_view, name='register'),
+
+    path('my-orders/', my_orders, name='my_orders'),
 
     path('products/', product_list, name='product_list'),
     path('products/create/', product_create, name='product_create'),
     path('products/<int:pk>/', product_detail, name='product_detail'),
     path('products/<int:pk>/edit/', product_update, name='product_update'),
     path('products/<int:pk>/delete/', product_delete, name='product_delete'),
+
+    path('product/<int:pk>/', ProductDetailView.as_view(), name='product_detail'),
+
 
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy('home')), name='logout'),
@@ -79,5 +87,4 @@ urlpatterns = [
     path('seasons/create/', season_create, name='season_create'),
     path('seasons/<int:pk>/edit/', season_update, name='season_update'),
     path('seasons/<int:pk>/delete/', season_delete, name='season_delete'),
-
 ]

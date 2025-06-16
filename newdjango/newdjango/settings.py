@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'basket',
     'up1'
 ]
 
@@ -94,6 +95,10 @@ LOGOUT_REDIRECT_URL = 'home'  # куда перенаправлять после
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+BASKET_SESSION_ID = 'basket'
+CART_SESSION_ID = 'basket'
 
 
 
