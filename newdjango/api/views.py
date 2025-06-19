@@ -2,6 +2,7 @@ from rest_framework import viewsets, permissions, filters
 from .models import *
 from .serializers import *
 
+
 # Пример только чтения
 class ReadOnlyViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
