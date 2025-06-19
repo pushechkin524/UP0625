@@ -7,6 +7,8 @@ from .views import review_list, review_create, review_update, review_delete
 from .views import faq_list, faq_create, faq_update, faq_delete
 from .views import season_list, season_create, season_update, season_delete, register_view, my_orders
 from .views import ProductDetailView
+from django.urls import path, include
+
 from .views import (
     home_page,
     about_page,
@@ -82,6 +84,7 @@ urlpatterns = [
     path('faq/create/', faq_create, name='faq_create'),
     path('faq/<int:pk>/edit/', faq_update, name='faq_update'),
     path('faq/<int:pk>/delete/', faq_delete, name='faq_delete'),
+
 
     path('seasons/', season_list, name='season_list'),
     path('seasons/create/', season_create, name='season_create'),
